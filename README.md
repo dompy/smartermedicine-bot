@@ -1,84 +1,89 @@
-# 📚 SmarterMedicine AutoBot
+# 🤖 SmarterMedicine Autobot
 
-Ein vollautomatischer Bot zur Durchführung von E-Learnings auf [smartermedicine.easylearn.ch](https://smartermedicine.easylearn.ch) – inklusive Slide-Navigation, Quizbeantwortung via GPT-4 und automatischem Login.
+Dieses Python-Tool automatisiert das Durcharbeiten von E-Learning-Kursen auf [smartermedicine.easylearn.ch](https://smartermedicine.easylearn.ch) mithilfe von:
 
----
-
-## 🔥 Features
-
-- Automatischer Login via `.env`
-- Erkennung & Klick auf "Next"-Button (rekursiv durch Frames)
-- Quizfragen-Erkennung per OCR (Tesseract)
-- Beantwortung der Fragen über GPT-4
-- Debug-Screenshots (`debug.png`)
+- 🧠 GPT-4 (OpenAI)
+- 📸 OCR (Tesseract)
+- 🎭 Playwright (Browsersteuerung)
 
 ---
 
-## 🧰 Voraussetzungen
+## ⚙️ Funktionen
 
-- Python >= 3.11
-- Eine `.env` Datei mit:
-
-```env
-OPENAI_API_KEY=sk-...
-USERNAME=deinbenutzername
-PASSWORD=deinpasswort
-```
+- Automatischer Login mit gespeicherten Zugangsdaten
+- Automatisches Klicken durch Slides
+- Erkennung von Quizfragen via Screenshot & OCR
+- Beantwortung von Multiple-Choice-Fragen durch GPT-4
+- Klicken der korrekten Antwort + "Submit" → Weiter
 
 ---
 
-## 🛠️ Installation
+## 🚀 Setup
+
+### 1. Repository klonen
 
 ```bash
-git clone https://github.com/deinbenutzer/MedMate.git
-cd MedMate/smartermedicine-bot
-python3 -m venv venv
-source venv/bin/activate
+git clone https://github.com/deinuser/smartermedicine-bot.git
+cd smartermedicine-bot
+```
+
+### 2. Virtuelle Umgebung erstellen
+
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
+
+### 3. Abhängigkeiten installieren
+
+```bash
 pip install -r requirements.txt
-```
-
-Falls `requirements.txt` fehlt:
-
-```bash
-pip install python-dotenv playwright openai pillow pytesseract
 playwright install
 ```
 
+### 4. `.env` Datei anlegen
+
+Erstelle eine Datei `.env` mit folgendem Inhalt:
+
+```
+OPENAI_API_KEY=dein-openai-key
+USERNAME=dein-login
+PASSWORD=dein-passwort
+```
+
+(Hinweis: Diese Datei ist bereits in `.gitignore` ausgeschlossen.)
+
 ---
 
-## 🚀 Starten
+## ▶️ Ausführung
 
 ```bash
 python main.py
 ```
 
----
-
-## ⚙️ Was passiert intern?
-
-1. Der Bot loggt sich automatisch ein.
-2. Du wählst dein gewünschtes E-Learning manuell aus.
-3. Sobald der neue Tab geöffnet ist, übernimmt der Bot:
-   - Klickt durch Slides
-   - Erkennt Quizfragen per Screenshot & OCR
-   - Fragt GPT-4 nach der Antwort
-   - Klickt die Antwort & submitted sie
+1. Tool loggt sich automatisch ein  
+2. Starte das gewünschte E-Learning manuell  
+3. Drücke ENTER sobald du auf der ersten Slide bist  
+4. Der Bot übernimmt von da an automatisch
 
 ---
 
-## ⚠️ Hinweise
+## 📦 Verzeichnisstruktur
 
-- Der Bot ist nur zur eigenen Lernunterstützung gedacht.
-- Du trägst die Verantwortung für die Richtigkeit der Antworten.
+```text
+smartermedicine-bot/
+├── main.py             # Hauptskript
+├── .env                # Login + API-Key (nicht committen!)
+├── .env.example        # Vorlage für eigene .env
+├── README.md
+├── debug.png           # Letzter Screenshot (zur Analyse)
+├── venv/               # Lokale virtuelle Umgebung
+```
 
 ---
 
-## 🖼️ Debug
+## 🧠 Hinweis
 
-Alle Screenshots werden als `debug.png` gespeichert (immer überschrieben).
+Dieses Tool ist rein zu Lern- und Demonstrationszwecken gedacht. Bitte beachte die Nutzungsbedingungen der jeweiligen Plattform.
 
 ---
-
-## 🤝 Lizenz
-
-MIT License
