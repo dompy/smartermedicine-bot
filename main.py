@@ -59,10 +59,11 @@ async def get_answer_from_text(text):
         print(f"❌ GPT-Fehler: {e}")
         return ""
 
-# REKURSIVER Frame-Scan für Next-Button
+# REKURSIVER Frame-Scan für Next-Button oder Continue-Button
 async def click_next_button_recursive(frame):
     selectors = [
         'button:has-text("Next")',
+        'button:has-text("Continue")',  # Hinzugefügt: Continue-Button
         ".navigation-controls__button_next",
         "button.uikit-primary-button_next"
     ]
@@ -71,7 +72,7 @@ async def click_next_button_recursive(frame):
             next_button = await frame.query_selector(selector)
             if next_button and await next_button.is_visible():
                 await next_button.click()
-                print(f"➡️  Weiter mit Button: {selector}")
+                print(f"➡️ Weiter mit Button: {selector}")
                 return True
         except:
             continue
@@ -80,6 +81,7 @@ async def click_next_button_recursive(frame):
         if await click_next_button_recursive(child):
             return True
     return False
+
 
 # Hauptfunktion
 async def run():
@@ -115,24 +117,15 @@ async def run():
             print("🔍 Kein Next-Button gefunden oder nicht sichtbar")
 
             try:
-                print("🔎 Suche sichtbare Buttons im aktuellen Kontext:")
-                buttons = await page.query_selector_all("button")
-                for btn in buttons:
-                    text = await btn.inner_text()
-                    cls = await btn.get_attribute("class")
-                    print(f"→ Button: '{text.strip()}' | class='{cls}'")
-            except:
-                print("⚠️ Button-Debug fehlgeschlagen")
-
-            try:
                 await take_screenshot_base64(page)
                 text = extract_text_with_ocr()
                 print("📨 Sende OCR-Text an GPT...")
                 answer = await get_answer_from_text(text)
                 print(f"✅ GPT sagt: {answer}")
 
+                # Antwort auswählen (manuell)
                 if answer:
-                    await page.get_by_text(answer, exact=False).first.click()
+                    await page.get_by_text(answer, exact=False).first.click()  # Klick auf Antwort
                     print(f"🖱️ Antwort {answer} angeklickt")
                 else:
                     print("⚠️ Keine gültige Antwort erhalten.")
@@ -141,15 +134,19 @@ async def run():
 
             try:
                 await page.click("text=Submit")
-                print("📤 Antwort abgeschickt")
+                print("📤 Antwort abgeschickt.")
             except:
                 print("⚠️ Kein Submit gefunden – evtl. auto weiter")
-
+                
             await page.wait_for_timeout(2000)
 
+            # Neue Eingabeaufforderung für ENTER, bevor es weitergeht
+            input("✅ Drücke ENTER, um mit der nächsten Folie fortzufahren...")
+
+            # Suche den "Next" oder "Continue"-Button nach der Frage
             clicked = await click_next_button_recursive(page.main_frame)
             if not clicked:
-                print("🛑 Kein weiterer Next-Button – vermutlich fertig")
+                print("🛑 Kein weiterer Next/Continue-Button – vermutlich fertig")
                 break
 
         await browser.close()
